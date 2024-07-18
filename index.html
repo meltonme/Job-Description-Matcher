@@ -1,31 +1,93 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Job Matching</title>
+    <title>Job Description Matcher</title>
     <style>
+        /* Add your CSS reset here */
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: sans-serif;
+            color: #333;
+            margin: 2rem;
         }
+
         .container {
             width: 50%;
             margin: 0 auto;
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            background-color: #f9f9f9;
+            background-color: #f5f5f5;
         }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .instructions,
+        .job-description,
+        .keywords,
+        .resume {
+            margin-bottom: 1rem;
+        }
+
+        .instructions {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .job-description label,
+        .keywords label,
+        .resume label {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #444;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        input[type="file"] {
+            padding: 5px;
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
         .feedback {
             margin-top: 20px;
         }
-        .matched, .missing {
-            margin: 5px 0;
+
+        .matched,
+        .missing {
             padding: 10px;
             border-radius: 5px;
+            margin: 5px 0;
         }
+
         .matched {
             background-color: #d4edda;
             border: 1px solid #c3e6cb;
         }
+
         .missing {
             background-color: #f8d7da;
             border: 1px solid #f5c6cb;
@@ -34,14 +96,31 @@
 </head>
 <body>
     <div class="container">
-        <h1>Upload Resume and Job Description</h1>
+        <h1>Job Description Matcher</h1>
+
+        <div class="instructions">
+            <label for="instructions">Instructions:</label>
+            <p>Copy and paste the job description</p>
+            <p>Add keywords from the job description that you would like to highlight</p>
+            <p>Upload your resume (PDF or .DOCTYPE)</p>
+        </div>
+
         <form id="match-form" action="/match" method="post" enctype="multipart/form-data">
-            <label for="job_description">Job Description:</label>
-            <textarea name="job_description" id="job_description" rows="4" cols="50"></textarea><br><br>
-            <label for="keywords">Keywords to Highlight (comma-separated):</label>
-            <input type="text" name="keywords" id="keywords" size="50"><br><br>
-            <label for="resume">Resume:</label>
-            <input type="file" name="resume" id="resume"><br><br>
+            <div class="job-description">
+                <label for="job_description">Job Description:</label>
+                <textarea name="job_description" id="job_description" rows="4" cols="50"></textarea>
+            </div>
+
+            <div class="keywords">
+                <label for="keywords">Keywords to Highlight (comma-separated):</label>
+                <input type="text" name="keywords" id="keywords" size="50">
+            </div>
+
+            <div class="resume">
+                <label for="resume">Resume:</label>
+                <input type="file" name="resume" id="resume">
+            </div>
+
             <input type="submit" value="Submit">
         </form>
 
@@ -95,8 +174,13 @@
                 listItem.textContent = keyword;
                 missingList.appendChild(listItem);
             });
+
+            // Clear form inputs after submission
+            document.getElementById('job_description').value = '';
+            document.getElementById('keywords').value = '';
+            document.getElementById('resume').value = '';
         };
-        
+
         function analyzeKeywords(jobDescription, keywords) {
             const jobWords = jobDescription.toLowerCase().split(/\s+/);
             const matchedKeywords = [];
@@ -110,13 +194,14 @@
                 }
             });
         
-            const matchScore = (matchedKeywords.length / keywords.length) * 100;
+            const matchScore = Math.round((matchedKeywords.length / keywords.length) * 100);
         
             return { matchScore, matchedKeywords, missingKeywords };
         }
     </script>
 </body>
 </html>
+
 
 
 
