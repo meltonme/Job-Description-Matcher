@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Job Matching</title>
+    <title>Job Description Matcher</title>
     <style>
-        /* CSS formatting */
-        /* Technically it could be a separate file*/
-        /* I didn't want to add another layer onto this for preference*/
+        /* Add your CSS reset here */
 
         body {
             font-family: sans-serif;
@@ -25,6 +23,27 @@
         h1 {
             font-size: 1.5rem;
             margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .instructions,
+        .job-description,
+        .keywords,
+        .resume {
+            margin-bottom: 1rem;
+        }
+
+        .instructions {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .job-description label,
+        .keywords label,
+        .resume label {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #444;
         }
 
         label {
@@ -41,16 +60,22 @@
         }
 
         input[type="file"] {
-            padding: 20px;
+            padding: 5px;
         }
 
-        input[type="submit"] {
+        input[type="submit"],
+        button {
             padding: 10px 20px;
             background-color: #4CAF50; /* Green */
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-right: 10px;
+        }
+
+        button {
+            background-color: #008CBA; /* Blue */
         }
 
         .feedback {
@@ -95,27 +120,26 @@
             </div>
 
             <input type="submit" value="Submit">
+            <button type="button" id="resubmit-button" style="display:none;">Resubmit</button>
         </form>
 
         <div class="feedback" id="feedback">
-            <!-- This is where the feeback will be displayed-->
-            <h1>Match Score: <span id="match-score"></span></h1>
+            <!-- Feedback will be displayed here -->
+            <h2>Match Score: <span id="match-score"></span></h2>
             <div class="matched-container">
-                <h4>Matched Keywords:</h4>
+                <h3>Matched Keywords:</h3>
                 <ul></ul>
             </div>
             <div class="missing-container">
-                <h4>Missing Keywords:</h4>
+                <h3>Missing Keywords:</h3>
                 <ul></ul>
             </div>
         </div>
     </div>
 
     <script>
-        // This could also be its own separate file
-        // I wanted to keep it in one place to avoid confusion
         document.getElementById('match-form').onsubmit = async function(event) {
-            event.preventDefault(); // This prevents default form submission
+            event.preventDefault(); // Prevent default form submission
         
             // Get form data
             const jobDescription = document.getElementById('job_description').value;
@@ -149,8 +173,15 @@
                 listItem.textContent = keyword;
                 missingList.appendChild(listItem);
             });
+
+            // Show resubmit button
+            document.getElementById('resubmit-button').style.display = 'inline-block';
         };
-        
+
+        document.getElementById('resubmit-button').onclick = function() {
+            document.getElementById('match-form').submit();
+        };
+
         function analyzeKeywords(jobDescription, keywords) {
             const jobWords = jobDescription.toLowerCase().split(/\s+/);
             const matchedKeywords = [];
@@ -164,13 +195,14 @@
                 }
             });
         
-            const matchScore = (matchedKeywords.length / keywords.length) * 100;
+            const matchScore = Math.round((matchedKeywords.length / keywords.length) * 100);
         
             return { matchScore, matchedKeywords, missingKeywords };
         }
     </script>
 </body>
 </html>
+
 
 
 
