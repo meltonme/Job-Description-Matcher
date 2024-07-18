@@ -53,7 +53,7 @@ def match_job_description_to_resume(job_description, keywords, resume_path):
         else:
             missing_keywords.append(keyword)
     
-    match_score = len(matched_keywords) / len(keywords) * 100 if keywords else 0
+    match_score = round((len(matched_keywords) / len(keywords)) * 100) if keywords else 0
     
     return match_score, matched_keywords, missing_keywords
 
