@@ -194,11 +194,11 @@
                 }
             });
         
-            const matchScore = Math.round((matchedKeywords.length / keywords.length) * 100);
+            const matchScore = (matchedKeywords.length / keywords.length) * 100;
         
-            return { matchScore, matchedKeywords, missingKeywords };
-        }
-    </script>
+        return { matchScore, matchedKeywords, missingKeywords };
+    }
+</script>
 </body>
 </html>
 
