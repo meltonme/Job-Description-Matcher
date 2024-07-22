@@ -14,6 +14,7 @@ if not os.path.exists(app.config['UPLOAD_FOLDER']):
 # Load spaCy model for stop word removal
 nlp = spacy.load("en_core_web_sm")
 
+# Extract text from PDF and DOCX file types 
 def extract_text_from_pdf(pdf_path):
     text = ''
     reader = PdfReader(pdf_path)
@@ -25,6 +26,7 @@ def extract_text_from_docx(docx_path):
     doc = docx.Document(docx_path)
     return '\n'.join([para.text for para in doc.paragraphs])
 
+# Remove stop words
 def remove_stop_words(text):
     doc = nlp(text)
     return ' '.join([token.text for token in doc if not token.is_stop and not token.is_punct])
