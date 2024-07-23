@@ -18,8 +18,6 @@ if not os.path.exists(app.config['UPLOAD_FOLDER']):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     match_score = None
-    matched_keywords = None
-    unmatched_keywords = None
     if request.method == 'POST':
         if 'resume' not in request.files:
             flash('No file part')
@@ -40,15 +38,10 @@ def index():
             # Extract text from the resume
             resume_text = extract_text_from_pdf(resume_path)
             
-            # Calculate the match score and keywords
-            match_score, matched_keywords, unmatched_keywords = match_job_description_to_resume(job_description, resume_text)
+            # Calculate the match score
+            match_score = match_job_description_to_resume(job_description, resume_text)
     
-    return render_template(
-        'index.html', 
-        match_score=match_score,
-        matched_keywords=matched_keywords,
-        unmatched_keywords=unmatched_keywords
-    )
+    return render_template('index.html', match_score=match_score)
 
 def extract_text_from_pdf(pdf_path):
     text = ""
@@ -63,15 +56,14 @@ def match_job_description_to_resume(job_description, resume_text):
     resume_doc = nlp(resume_text.lower())
 
     # Extract keywords and filter out stop words
-    job_desc_keywords = set(token.lemma_ for token in job_desc_doc if token.is_alpha and not token.is_stop)
-    resume_keywords = set(token.lemma_ for token in resume_doc if token.is_alpha and not token.is_stop)
+    job_desc_keywords = [token.lemma_ for token in job_desc_doc if token.is_alpha and not token.is_stop]
+    resume_keywords = [token.lemma_ for token in resume_doc if token.is_alpha and not token.is_stop]
 
-    # Calculate matching score and keyword lists
-    matched_keywords = job_desc_keywords & resume_keywords
-    unmatched_keywords = job_desc_keywords - resume_keywords
-    score = len(matched_keywords) / len(job_desc_keywords) * 100 if job_desc_keywords else 0
+    # Calculate matching score based on common keywords
+    common_keywords = set(job_desc_keywords) & set(resume_keywords)
+    score = len(common_keywords) / len(set(job_desc_keywords)) * 100
 
-    return round(score, 2), sorted(matched_keywords), sorted(unmatched_keywords)
+    return round(score, 2)
 
 if __name__ == '__main__':
     app.run(debug=True)

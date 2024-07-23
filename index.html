@@ -1,180 +1,75 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
+    <meta charset="utf-8">
     <title>Job Description Matcher</title>
     <style>
-        /* CSS code here */
-
         body {
-            font-family: sans-serif;
-            color: #333;
-            margin: 2rem;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-
         .container {
-            width: 50%;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f5f5f5;
+            background-color: white;
+            padding: 20px 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
         h1 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            text-align: center;
+            color: #333;
         }
-
-        .instructions,
-        .job-description,
-        .keywords,
-        .resume {
-            margin-bottom: 1rem;
-        }
-
-        .instructions {
-            font-size: 1rem;
-            color: #555;
-        }
-
-        .job-description label,
-        .keywords label,
-        .resume label {
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: #444;
-        }
-
         label {
             display: block;
-            margin-bottom: 5px;
+            margin-top: 10px;
+            color: #666;
         }
-
-        input[type="text"],
-        textarea {
+        textarea, input[type="file"], input[type="submit"] {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
-
-        input[type="file"] {
-            padding: 5px;
-        }
-
         input[type="submit"] {
-            padding: 10px 20px;
-            background-color: #4CAF50; /* Green */
+            background-color: #5cb85c;
             color: white;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
         }
-
-        .feedback {
+        input[type="submit"]:hover {
+            background-color: #4cae4c;
+        }
+        .match-score {
             margin-top: 20px;
-        }
-
-        .matched,
-        .missing {
             padding: 10px;
-            border-radius: 5px;
-            margin: 5px 0;
-        }
-
-        .matched {
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-        }
-
-        .missing {
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
+            background-color: #e7f7e7;
+            border: 1px solid #b2d8b2;
+            border-radius: 4px;
+            color: #3c763d;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Job Description Matcher</h1>
-        <form id="match-form" enctype="multipart/form-data">
-            <div class="job-description">
-                <label for="job_description">Job Description:</label>
-                <textarea name="job_description" id="job_description" rows="4" cols="50"></textarea>
-            </div>
-
-            <!--Keeping this code just in case I need it again-->
-            <!-- <div class="keywords">
-                <label for="keywords">Keywords to Highlight (comma-separated):</label>
-                <input type="text" name="keywords" id="keywords" size="50">
-            </div> -->
-
-            <div class="resume">
-                <label for="resume">Resume:</label>
-                <input type="file" name="resume" id="resume">
-            </div>
-
+        <h1>Upload your resume to match with the job description</h1>
+        <form action="/" method="post" enctype="multipart/form-data">
+            <label for="job_description">Job Description:</label>
+            <textarea name="job_description" rows="10" cols="30"></textarea>
+            <label for="resume">Upload Resume:</label>
+            <input type="file" name="resume" id="resume">
             <input type="submit" value="Submit">
         </form>
-
-        <div class="feedback" id="feedback">
-            <!-- Feedback will be displayed here -->
-            <h2>Match Score: <span id="match-score"></span></h2>
-            <div class="matched-container">
-                <h3>Matched Keywords:</h3>
-                <ul></ul>
-            </div>
-            <div class="missing-container">
-                <h3>Missing Keywords:</h3>
-                <ul></ul>
-            </div>
+        {% if match_score is not none %}
+        <div class="match-score">
+            Match Score: {{ match_score }}
         </div>
+        {% endif %}
     </div>
-
-    <script>
-        document.getElementById('match-form').onsubmit = async function(event) {
-            event.preventDefault(); // Prevent default form submission
-        
-            const formData = new FormData(event.target);
-        
-            const response = await fetch('/match', {
-                method: 'POST',
-                body: formData
-            });
-        
-            const result = await response.json();
-        
-            // Update feedback section elements
-            const feedbackDiv = document.getElementById('feedback');
-            const matchScoreSpan = document.getElementById('match-score');
-            const matchedList = feedbackDiv.querySelector('.matched-container ul');
-            const missingList = feedbackDiv.querySelector('.missing-container ul');
-        
-            // Update feedback content
-            matchScoreSpan.textContent = `${result.match_score}%`;
-        
-            // Update matched and missing keyword lists
-            matchedList.innerHTML = ''; // Clear existing content
-            missingList.innerHTML = ''; // Clear existing content
-        
-            result.matched_keywords.forEach(keyword => {
-                const listItem = document.createElement('li');
-                listItem.textContent = keyword;
-                matchedList.appendChild(listItem);
-            });
-        
-            result.missing_keywords.forEach(keyword => {
-                const listItem = document.createElement('li');
-                listItem.textContent = keyword;
-                missingList.appendChild(listItem);
-            });
-
-            // Clear form inputs after submission
-            document.getElementById('job_description').value = '';
-            document.getElementById('keywords').value = '';
-            document.getElementById('resume').value = '';
-        };
-    </script>
 </body>
 </html>
 
