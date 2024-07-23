@@ -1,76 +1,81 @@
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.utils import secure_filename
 import os
 from PyPDF2 import PdfReader
-import docx
 import spacy
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='.')
 app.config['UPLOAD_FOLDER'] = 'uploads'
+app.secret_key = 'supersecretkey'  # Required for flashing messages
 
+# Load SpaCy model
+nlp = spacy.load("en_core_web_sm")
+
+# Ensure the upload folder exists
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 
-# Load spaCy model for stop word removal
-nlp = spacy.load("en_core_web_sm")
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    match_score = None
+    matched_keywords = None
+    unmatched_keywords = None
+    if request.method == 'POST':
+        if 'resume' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
 
-# Extract text from PDF and DOCX file types 
+        job_description = request.form['job_description']
+        resume = request.files['resume']
+
+        if resume.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+
+        if resume:
+            filename = secure_filename(resume.filename)
+            resume_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            resume.save(resume_path)
+            
+            # Extract text from the resume
+            resume_text = extract_text_from_pdf(resume_path)
+            
+            # Calculate the match score and keywords
+            match_score, matched_keywords, unmatched_keywords = match_job_description_to_resume(job_description, resume_text)
+    
+    return render_template(
+        'index.html', 
+        match_score=match_score,
+        matched_keywords=matched_keywords,
+        unmatched_keywords=unmatched_keywords
+    )
+
 def extract_text_from_pdf(pdf_path):
-    text = ''
-    reader = PdfReader(pdf_path)
-    for page in reader.pages:
-        text += page.extract_text()
+    text = ""
+    with open(pdf_path, 'rb') as file:
+        reader = PdfReader(file)
+        for page in reader.pages:
+            text += page.extract_text()
     return text
 
-def extract_text_from_docx(docx_path):
-    doc = docx.Document(docx_path)
-    return '\n'.join([para.text for para in doc.paragraphs])
+def match_job_description_to_resume(job_description, resume_text):
+    job_desc_doc = nlp(job_description.lower())
+    resume_doc = nlp(resume_text.lower())
 
-# Remove stop words
-def remove_stop_words(text):
-    doc = nlp(text)
-    return ' '.join([token.text for token in doc if not token.is_stop and not token.is_punct])
+    # Extract keywords and filter out stop words
+    job_desc_keywords = set(token.lemma_ for token in job_desc_doc if token.is_alpha and not token.is_stop)
+    resume_keywords = set(token.lemma_ for token in resume_doc if token.is_alpha and not token.is_stop)
 
-@app.route('/')
-def index():
-    return render_template_string(open('index.html').read())
+    # Calculate matching score and keyword lists
+    matched_keywords = job_desc_keywords & resume_keywords
+    unmatched_keywords = job_desc_keywords - resume_keywords
+    score = len(matched_keywords) / len(job_desc_keywords) * 100 if job_desc_keywords else 0
 
-@app.route('/match', methods=['POST'])
-def match():
-    job_description = request.form['job_description']
-    resume = request.files['resume']
-    filename = secure_filename(resume.filename)
-    resume_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    resume.save(resume_path)
-    
-    # Extract text from resume based on its file type
-    if filename.endswith('.pdf'):
-        resume_text = extract_text_from_pdf(resume_path)
-    elif filename.endswith('.docx'):
-        resume_text = extract_text_from_docx(resume_path)
-    else:
-        return 'Unsupported file format', 400
-
-    # Remove stop words from the job description
-    clean_job_description = remove_stop_words(job_description)
-    
-    # Analyze the cleaned job description against the resume content
-    matched_keywords = [word for word in clean_job_description.split() if word.lower() in resume_text.lower()]
-    missing_keywords = [word for word in clean_job_description.split() if word.lower() not in resume_text.lower()]
-    
-    match_score = round((len(matched_keywords) / len(clean_job_description.split())) * 100) if clean_job_description else 0
-
-    # Clean up by deleting the uploaded file after processing
-    os.remove(resume_path)
-    
-    return jsonify({
-        'match_score': match_score,
-        'matched_keywords': matched_keywords,
-        'missing_keywords': missing_keywords
-    })
+    return round(score, 2), sorted(matched_keywords), sorted(unmatched_keywords)
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
