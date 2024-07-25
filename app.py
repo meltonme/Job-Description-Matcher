@@ -1,23 +1,22 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.utils import secure_filename
 import os
-from PyPDF2 import PdfReader
 import spacy
+from PyPDF2 import PdfReader
 
 app = Flask(__name__, template_folder='.')
-app.config['UPLOAD_FOLDER'] = 'uploads'
 app.secret_key = 'supersecretkey'  # Required for flashing messages
 
-# Load SpaCy model
-nlp = spacy.load("en_core_web_sm")
-
-# Ensure the upload folder exists
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
+# Load the trained SpaCy model
+nlp = spacy.load("models/custom_ner_model")
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     match_score = None
+    matched_keywords = []
+    unmatched_keywords = []
+    entities = []
+
     if request.method == 'POST':
         if 'resume' not in request.files:
             flash('No file part')
@@ -31,24 +30,37 @@ def index():
             return redirect(request.url)
 
         if resume:
-            filename = secure_filename(resume.filename)
-            resume_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            resume.save(resume_path)
+            # Read file directly into memory
+            resume_text = extract_text_from_pdf(resume)
             
-            # Extract text from the resume
-            resume_text = extract_text_from_pdf(resume_path)
-            
-            # Calculate the match score
-            match_score = match_job_description_to_resume(job_description, resume_text)
-    
-    return render_template('index.html', match_score=match_score)
+            # Calculate the match score and keywords
+            match_score, matched_keywords, unmatched_keywords = match_job_description_to_resume(job_description, resume_text)
 
-def extract_text_from_pdf(pdf_path):
+            # Perform NER prediction
+            doc = nlp(resume_text)
+            entities = [(ent.text, ent.label_) for ent in doc.ents]
+
+            # Debugging output
+            print(f"Job Description: {job_description}")
+            print(f"Resume Text: {resume_text}")
+            print(f"Match Score: {match_score}")
+            print(f"Matched Keywords: {matched_keywords}")
+            print(f"Unmatched Keywords: {unmatched_keywords}")
+            print(f"Entities: {entities}")
+
+            return render_template('index.html', 
+                                   match_score=match_score, 
+                                   matched_keywords=matched_keywords, 
+                                   unmatched_keywords=unmatched_keywords, 
+                                   entities=entities)
+
+    return render_template('index.html', match_score=match_score, matched_keywords=matched_keywords, unmatched_keywords=unmatched_keywords)
+
+def extract_text_from_pdf(resume_file):
     text = ""
-    with open(pdf_path, 'rb') as file:
-        reader = PdfReader(file)
-        for page in reader.pages:
-            text += page.extract_text()
+    reader = PdfReader(resume_file)
+    for page in reader.pages:
+        text += page.extract_text() or ""
     return text
 
 def match_job_description_to_resume(job_description, resume_text):
@@ -59,14 +71,36 @@ def match_job_description_to_resume(job_description, resume_text):
     job_desc_keywords = [token.lemma_ for token in job_desc_doc if token.is_alpha and not token.is_stop]
     resume_keywords = [token.lemma_ for token in resume_doc if token.is_alpha and not token.is_stop]
 
-    # Calculate matching score based on common keywords
-    common_keywords = set(job_desc_keywords) & set(resume_keywords)
-    score = len(common_keywords) / len(set(job_desc_keywords)) * 100
+    # Debugging output
+    print(f"Job Description Keywords: {job_desc_keywords}")
+    print(f"Resume Keywords: {resume_keywords}")
 
-    return round(score, 2)
+    # Calculate matching score
+    common_keywords = set(job_desc_keywords) & set(resume_keywords)
+    matched_keywords = list(common_keywords)
+    unmatched_keywords = list(set(job_desc_keywords) - common_keywords)
+
+    print(f"Common Keywords: {common_keywords}")
+
+    score = len(common_keywords) / len(set(job_desc_keywords)) * 100 if job_desc_keywords else 0
+
+    return round(score, 2), matched_keywords, unmatched_keywords
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
