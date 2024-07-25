@@ -1,0 +1,69 @@
+import json
+import os
+
+# Function to load JSON data
+def load_data(json_file):
+    """Load JSON data from a file."""
+    if not os.path.isfile(json_file):
+        raise FileNotFoundError(f"The file {json_file} does not exist.")
+    
+    with open(json_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    return data
+
+# Function to check data integrity
+def check_data_integrity(data):
+    """Check data integrity and report issues."""
+    invalid_items = 0
+    total_items = len(data)
+
+    for item in data:
+        if 'points' not in item or 'label' not in item:
+            print(f"Invalid item (missing 'points' or 'label'): {item}")
+            invalid_items += 1
+        else:
+            for point, label in zip(item['points'], item['label']):
+                if not ('start' in point and 'end' in point and 'text' in point):
+                    print(f"Invalid point structure: {point}")
+                    invalid_items += 1
+                if not isinstance(label, str):
+                    print(f"Invalid label: {label}")
+                    invalid_items += 1
+
+    return total_items, invalid_items
+
+# Define file path
+input_file = 'fixed_data.json'
+
+# Print current working directory for debugging
+print("Current working directory:", os.getcwd())
+
+# Load and check the data
+try:
+    data = load_data(input_file)
+    total_items, invalid_items = check_data_integrity(data)
+    
+    # Summary of the integrity check
+    print("\nIntegrity Check Summary")
+    print("-----------------------")
+    print(f"Total items checked: {total_items}")
+    print(f"Invalid items found: {invalid_items}")
+    if invalid_items == 0:
+        print("All items are valid.")
+    else:
+        print("Some items are invalid. See details above.")
+
+except FileNotFoundError as e:
+    print(e)
+except json.JSONDecodeError:
+    print(f"Error decoding JSON from the file {input_file}.")
+except Exception as e:
+    print(f"An unexpected error occurred: {e}")
+
+
+
+
+
+
+
+

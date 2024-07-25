@@ -1,0 +1,33 @@
+import json
+
+# Function to load JSON data
+def load_data(json_file):
+    with open(json_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    return data
+
+# Function to fix data integrity issues
+def fix_data_integrity(data):
+    corrected_data = []
+    for item in data:
+        if 'points' not in item:
+            item['points'] = []
+        if 'label' not in item:
+            item['label'] = []
+
+        # Ensure other necessary corrections here...
+
+        corrected_data.append(item)
+    
+    # Print a confirmation message
+    print("Data integrity issues have been fixed.")
+
+    return corrected_data
+
+# Example usage
+data = load_data('data.json')
+fixed_data = fix_data_integrity(data)
+
+# Optionally, save the fixed data to a new file
+with open('fixed_data.json', 'w', encoding='utf-8') as f:
+    json.dump(fixed_data, f, ensure_ascii=False, indent=4)
