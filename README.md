@@ -82,8 +82,18 @@ Job Description Matcher/
 │   └── train_model.py         # Script to train the model
 ```
 
-**IMPORTANT**: You will need to upload your data as "data.json" in order for the framework to work correctly in its current state!
-**IMPORTANT**: If you choose to use a custom named file, please make sure that the code is corrected to avoid errors. 
+- **IMPORTANT**: You will need to upload your data as "data.json" in order for the framework to work correctly in its current state!
+- **IMPORTANT**: If you choose to use a custom named file, please make sure that the code is corrected to avoid errors.
+- **IMPORTANT**: If you decide to create the 'models' folder from scratch, all you will need to do is add the 'models' folder and then create the sub-folder 'custom_ner_model'. The remaining files will populate when your model is successfully trained. See structure below. 
+```
+Job Description Matcher/
+│
+├── models/
+│   └── custom_ner_model/
+│      
+
+```
+
 
 ## Training Steps 
 
@@ -102,6 +112,11 @@ nlp = spacy.load("models/custom_ner_model")
 ```
 
 
+# Dependency Documentation for Reference
 
+- [Flask Documentation](https://flask.palletsprojects.com/en/3.0.x/)
+- [spaCy Documentation](https://spacy.io/)
+- [PyPDF2 Documentation](https://pypdf.readthedocs.io/en/latest/index.html)
+- [python-docx Documentation](https://python-docx.readthedocs.io/en/latest/)
 
 
