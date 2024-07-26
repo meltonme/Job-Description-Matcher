@@ -8,7 +8,15 @@ The application supports PDF and DOCX file formats for resumes.
 See "Custom NER Model" section for instructions on creating a custom NER model. 
 
 # Table of Contents 
-- 
+- [Project Structure](https://github.com/meltonme/Job-Description-Matcher/blob/main/README.md#project-structure)
+- [Technologies Used](https://github.com/meltonme/Job-Description-Matcher/blob/main/README.md#technologies-used)
+- [Methodology](https://github.com/meltonme/Job-Description-Matcher/blob/main/README.md#methodology)
+- [Dependencies](https://github.com/meltonme/Job-Description-Matcher/blob/main/README.md#dependencies)
+- [Running the Application](https://github.com/meltonme/Job-Description-Matcher/blob/main/README.md#running-the-application)
+- [Custom NER Model](https://github.com/meltonme/Job-Description-Matcher/blob/main/README.md#create-a-custom-ner-model)
+  - [Training Steps](https://github.com/meltonme/Job-Description-Matcher/blob/main/README.md#training-steps)
+  - [Using the Custom NER Model](https://github.com/meltonme/Job-Description-Matcher/blob/main/README.md#using-your-custom-ner-model-in-apppy)
+- [Dependency Documentation](https://github.com/meltonme/Job-Description-Matcher/blob/main/README.md#dependency-documentation-for-reference)
 
 
 ## Project Structure
