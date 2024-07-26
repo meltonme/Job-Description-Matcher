@@ -78,7 +78,7 @@ python app.py
 ```
 From there, open your web browser and navigate to the below address to use the application. 
 ```
-http:///127.0.0.7:5000
+http:///127.0.0.1:5000
 ```
 
 ## Usage 
