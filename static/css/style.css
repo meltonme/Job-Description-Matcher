@@ -8,6 +8,7 @@ body {
     align-items: center;
     height: 100vh;
 }
+
 .container {
     background-color: white;
     padding: 20px 40px;
@@ -16,24 +17,28 @@ body {
     max-width: 600px;
     width: 100%;
 }
+
 h1 {
     color: #3D4A3E;
     margin-bottom: 20px;
     text-align: center;
 }
+
 label {
     display: block;
     margin-top: 10px;
     color: #94B396;
 }
-textarea, input[type="file"], input[type="submit"] {
+
+textarea, input[type="text"], input[type="file"], button {
     width: 100%;
     padding: 12px;
     margin-top: 10px;
     border: 1px solid #94B396;
     border-radius: 4px;
 }
-input[type="submit"] {
+
+button {
     background-color: #56B4D6;
     color: white;
     border: none;
@@ -41,9 +46,11 @@ input[type="submit"] {
     font-size: 16px;
     font-weight: bold;
 }
-input[type="submit"]:hover {
+
+button:hover {
     background-color: #92ECFF;
 }
+
 .match-score {
     margin-top: 20px;
     padding: 10px;
