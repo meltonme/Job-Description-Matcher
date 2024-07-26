@@ -1,6 +1,6 @@
 # Job Description Matcher
 
-This is a Flask application that matches job descriptions against resumes to calculate a match score based on the presence of keywords. 
+This is a Flask application that matches job descriptions against resumes to calculate a match score based on the presence of user provided keywords. 
 
 The application supports PDF and DOCX file formats for resumes.
 
