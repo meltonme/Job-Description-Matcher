@@ -22,3 +22,28 @@ The application supports PDF and DOCX file formats for resumes.
 6. **Result Display**: The application returns the match score, matched keywords, and missing keywords as a JSON response.
 7. **Custom Keyword Matching**: Users can also provide specific keywords to match against the resume, allowing for flexible and targeted analysis.
 
+
+## Dependencies
+
+Ensure you have the following dependencies installed:
+
+- Flask
+- Werkzeug
+- PyPDF2
+- python-docx
+- spaCy
+- en_core_web_sm model for spaCy
+
+You can install the required packages using pip:
+
+```sh
+pip install Flask Werkzeug PyPDF2 python-docx spacy
+```
+
+```
+python -m spacy download en_core_web_sm
+```
+
+
+
+
