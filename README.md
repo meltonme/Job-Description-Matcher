@@ -63,9 +63,10 @@ http:///127.0.0.7:5000
 3. Upload your resume in PDF or DOCX format.
 4. Click the "Submit" button to get your match score and keyword analysis.
 
-# Training Your Model 
+# Create a Custom NER Model
 
 This project includes framework for users to train their own custom named entity recongition (NER) model using SpaCy. The structure for the custom model is shown below: 
+
 ```
 Job Description Matcher/
 │
@@ -80,6 +81,19 @@ Job Description Matcher/
 │   ├── dataintegretycheck.py  # Used to check if the data in the fixed_data.json is correct
 │   └── train_model.py         # Script to train the model
 ```
+
+**IMPORTANT**: You will need to upload your data as "data.json" in order for the framework to work correctly in its current state! If you choose to use a custom named file, please make sure that the code is corrected to avoid errors. 
+
+## Training Steps 
+
+1. **Upload Data**: Upload and save the json file with your data to 'training' folder as 'data.json'
+2. **Data Cleaning**: Use 'automated_cleaning.py' to clean and fix any data integrity issues in your training data. The code will save the fixed data as 'fixed_data.json'
+3. **Data Integrity Check**: Run 'dataintegritycheck.py' to ensure the data in 'fixed_data.json' is correct.
+4. **Model Training**: Run 'train_model.py' to train your custom NER model. It will save your custom model to the 'models/custom_ner_model' folder.
+
+## Using your Custom NER Model in 'app.py' 
+
+
 
 
 
