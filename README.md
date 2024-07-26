@@ -82,7 +82,8 @@ Job Description Matcher/
 │   └── train_model.py         # Script to train the model
 ```
 
-**IMPORTANT**: You will need to upload your data as "data.json" in order for the framework to work correctly in its current state! If you choose to use a custom named file, please make sure that the code is corrected to avoid errors. 
+**IMPORTANT**: You will need to upload your data as "data.json" in order for the framework to work correctly in its current state!
+**IMPORTANT**: If you choose to use a custom named file, please make sure that the code is corrected to avoid errors. 
 
 ## Training Steps 
 
@@ -92,6 +93,13 @@ Job Description Matcher/
 4. **Model Training**: Run 'train_model.py' to train your custom NER model. It will save your custom model to the 'models/custom_ner_model' folder.
 
 ## Using your Custom NER Model in 'app.py' 
+
+In order to use your custom NER model, you will need to adjust the script in the 'app.py' file using the code below. This will change the spaCy model from a pre-built one to your custom model.
+
+```
+# Load the trained SpaCy model
+nlp = spacy.load("models/custom_ner_model")
+```
 
 
 
