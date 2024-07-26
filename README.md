@@ -118,5 +118,6 @@ nlp = spacy.load("models/custom_ner_model")
 - [spaCy Documentation](https://spacy.io/)
 - [PyPDF2 Documentation](https://pypdf.readthedocs.io/en/latest/index.html)
 - [python-docx Documentation](https://python-docx.readthedocs.io/en/latest/)
+- [Werkzeug Documentation](https://werkzeug.palletsprojects.com/en/3.0.x/)
 
 
