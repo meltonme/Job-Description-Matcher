@@ -5,6 +5,8 @@ This is a Flask application that matches job descriptions against resumes to cal
 
 The application supports PDF and DOCX file formats for resumes.
 
+See "Custom NER Model" section for instructions on creating a custom NER model. 
+
 ## Project Structure
 ```
 Job Description Matcher/
