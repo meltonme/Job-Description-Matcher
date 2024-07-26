@@ -5,6 +5,19 @@ This is a Flask application that matches job descriptions against resumes to cal
 
 The application supports PDF and DOCX file formats for resumes.
 
+## Project Structure
+```
+Job Description Matcher/
+│
+├── app.py
+├── templates/
+│ └── index.html
+├── static/
+│ └── css/
+│ └── style.css
+
+```
+
 ## Technologies Used 
 
 - **Flask**: A micro web framework for Python, used to handle HTTP requests and serve the application
