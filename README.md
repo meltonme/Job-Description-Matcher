@@ -7,6 +7,10 @@ The application supports PDF and DOCX file formats for resumes.
 
 See "Custom NER Model" section for instructions on creating a custom NER model. 
 
+# Table of Contents 
+- 
+
+
 ## Project Structure
 ```
 Job Description Matcher/
