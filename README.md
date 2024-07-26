@@ -1,5 +1,6 @@
 # Job Description Matcher
 
+
 This is a Flask application that matches job descriptions against resumes to calculate a match score based on the presence of user provided keywords. 
 
 The application supports PDF and DOCX file formats for resumes.
@@ -44,6 +45,41 @@ pip install Flask Werkzeug PyPDF2 python-docx spacy
 python -m spacy download en_core_web_sm
 ```
 
+## Running the Application
+
+Once you have cloned the repository and installed the necessary dependencies, run the Flask application with: 
+```
+python app.py
+```
+From there, open your web browser and navigate to the below address to use the application. 
+```
+http:///127.0.0.7:5000
+```
+
+## Usage 
+
+1. Open the application in your browser.
+2. Paste the job description and/or specific keywords in the provided text area.
+3. Upload your resume in PDF or DOCX format.
+4. Click the "Submit" button to get your match score and keyword analysis.
+
+# Training Your Model 
+
+This project includes framework for users to train their own custom named entity recongition (NER) model using SpaCy. The structure for the custom model is shown below: 
+```
+Job Description Matcher/
+│
+├── models/
+│   └── custom_ner_model/
+│       ├── ner/
+│       ├── tokenizer/
+│       ├── meta.json
+│       └── config.cfg
+├── training/
+│   ├── automated_cleaning.py  # Used to fix any data integrity issues
+│   ├── dataintegretycheck.py  # Used to check if the data in the fixed_data.json is correct
+│   └── train_model.py         # Script to train the model
+```
 
 
 
